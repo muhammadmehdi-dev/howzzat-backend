@@ -7,3 +7,4 @@ python-dotenv
 django-cors-headers
 requests
 gunicorn
+drf-spectacular

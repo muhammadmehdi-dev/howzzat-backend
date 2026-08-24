@@ -18,6 +18,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
+    'drf_spectacular',
     'api',
 ]
 
@@ -112,5 +113,32 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.JSONParser',
-    ]
+    ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Howzzat API',
+    'DESCRIPTION': 'Backend API for the Howzzat cricket prediction platform. Provides endpoints for match data, live scores, user authentication, predictions, leaderboards, and real-time Cricbuzz data via RapidAPI.',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'SWAGGER_UI_SETTINGS': {
+        'deepLinking': True,
+        'persistAuthorization': True,
+        'displayOperationId': False,
+        'filter': True,
+    },
+    'TAGS': [
+        {'name': 'Authentication', 'description': 'User registration and login'},
+        {'name': 'Matches', 'description': 'Local database match records'},
+        {'name': 'Predictions', 'description': 'Match prediction system'},
+        {'name': 'Leaderboard', 'description': 'User rankings'},
+        {'name': 'Live Scores', 'description': 'Cricbuzz live scores via RapidAPI'},
+        {'name': 'Cricbuzz Matches', 'description': 'Upcoming, recent, and live matches from Cricbuzz'},
+        {'name': 'Match Detail (Cricbuzz)', 'description': 'Match info and scoreboard from Cricbuzz'},
+        {'name': 'Schedule', 'description': 'Cricket fixtures from Cricbuzz'},
+        {'name': 'Series', 'description': 'Cricket series and tournaments from Cricbuzz'},
+        {'name': 'Teams & Players', 'description': 'International teams and player squads from Cricbuzz'},
+        {'name': 'Admin', 'description': 'Admin-only endpoints for managing match data'},
+    ],
 }

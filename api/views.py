@@ -7,6 +7,7 @@ from django.db.models import Q
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 
 from .models import Match, User, MatchPrediction
 from .pagination import StandardResultsSetPagination
@@ -22,6 +23,26 @@ from .tasks import settle_completed_match
 redis_client = redis.from_url(settings.REDIS_URL, decode_responses=True)
 
 
+@extend_schema(
+    tags=['Matches'],
+    summary='List all matches (paginated)',
+    description='Returns paginated historical match records with comprehensive filtering.',
+    parameters=[
+        OpenApiParameter(name='page', type=int, description='Page number'),
+        OpenApiParameter(name='page_size', type=int, description='Results per page (max 100)'),
+        OpenApiParameter(name='search', type=str, description='Free text search'),
+        OpenApiParameter(name='year', type=int, description='Filter by year'),
+        OpenApiParameter(name='match_type', type=str, description='T20, ODI, Test, IT20'),
+        OpenApiParameter(name='team', type=str, description='Filter by team name'),
+        OpenApiParameter(name='team_type', type=str, description='international, club'),
+        OpenApiParameter(name='gender', type=str, description='male, female, men, women'),
+        OpenApiParameter(name='venue', type=str, description='Filter by venue'),
+        OpenApiParameter(name='city', type=str, description='Filter by city'),
+        OpenApiParameter(name='winner', type=str, description='Filter by winner'),
+        OpenApiParameter(name='date_from', type=str, description='Start date (YYYY-MM-DD)'),
+        OpenApiParameter(name='date_to', type=str, description='End date (YYYY-MM-DD)'),
+    ],
+)
 @api_view(['GET'])
 def get_matches(request):
     """
@@ -116,6 +137,7 @@ def get_matches(request):
     return paginator.get_paginated_response(serializer.data)
 
 
+@extend_schema(tags=['Matches'], summary='Get match detail', description='Returns full match details including team rosters and players.')
 @api_view(['GET'])
 def get_match_detail(request, match_id):
     """
@@ -130,6 +152,7 @@ def get_match_detail(request, match_id):
     return Response(serializer.data)
 
 
+@extend_schema(tags=['Predictions'], summary='Submit a prediction', description='Place a prediction on a match winner by wagering leaderboard points.')
 @api_view(['POST'])
 def make_prediction(request):
     serializer = PredictionRequestSerializer(data=request.data)
@@ -172,6 +195,7 @@ def make_prediction(request):
     return Response({"message": "Prediction submitted successfully", "prediction_id": prediction.id})
 
 
+@extend_schema(tags=['Leaderboard'], summary='Get top 100 users', description='Returns the top 100 users ranked by leaderboard points.')
 @api_view(['GET'])
 def get_leaderboard(request):
     users = User.objects.order_by('-leaderboard_points')[:100]
@@ -179,6 +203,7 @@ def get_leaderboard(request):
     return Response(serializer.data)
 
 
+@extend_schema(tags=['Live Scores'], summary='Get live score for a match', description='Returns live score data from Redis cache (10s TTL) with Postgres fallback.')
 @api_view(['GET'])
 def get_live_score(request, match_id):
     cached = redis_client.get(f"match_live:{match_id}")
@@ -193,6 +218,7 @@ def get_live_score(request, match_id):
     return Response({"source": "postgres", "data": match.innings_json})
 
 
+@extend_schema(tags=['Admin'], summary='Update local match score', description='Admin-only endpoint to push live score updates. Requires X-Admin-Key header.')
 @api_view(['POST'])
 def update_local_match(request):
     api_key = request.headers.get('X-Admin-Key')
@@ -248,54 +274,63 @@ def update_local_match(request):
 # RapidAPI Integrations
 from .services import rapid_api
 
+@extend_schema(tags=['Live Scores'], summary='Get live scores (Cricbuzz)')
 @api_view(['GET'])
 def get_rapid_live_scores(request):
     """Fetch live cricket scores from RapidAPI"""
     data = rapid_api.get_live_scores()
     return Response(data)
 
+@extend_schema(tags=['Series'], summary='Get all series')
 @api_view(['GET'])
 def get_rapid_series(request):
     """Fetch cricket series list from RapidAPI"""
     data = rapid_api.get_series()
     return Response(data)
 
+@extend_schema(tags=['Series'], summary='Get women series')
 @api_view(['GET'])
 def get_rapid_series_women(request):
     """Fetch women cricket series list from RapidAPI"""
     data = rapid_api.get_series_women()
     return Response(data)
 
+@extend_schema(tags=['Series'], summary='Get league series')
 @api_view(['GET'])
 def get_rapid_series_league(request):
     """Fetch franchise league series list from RapidAPI"""
     data = rapid_api.get_series_league()
     return Response(data)
 
+@extend_schema(tags=['Series'], summary='Get domestic series')
 @api_view(['GET'])
 def get_rapid_series_domestic(request):
     """Fetch domestic cricket series list from RapidAPI"""
     data = rapid_api.get_series_domestic()
     return Response(data)
 
+@extend_schema(tags=['Series'], summary='Get international series')
 @api_view(['GET'])
 def get_rapid_series_international(request):
     """Fetch international cricket series list from RapidAPI"""
     data = rapid_api.get_series_international()
     return Response(data)
 
+@extend_schema(tags=['Series'], summary='Get all series (combined)')
 @api_view(['GET'])
 def get_rapid_series_all(request):
     """Fetch all master cricket series list from RapidAPI"""
     data = rapid_api.get_series_all()
     return Response(data)
 
+@extend_schema(tags=['Teams & Players'], summary='Get international teams')
 @api_view(['GET'])
 def get_rapid_teams(request):
     """Fetch cricket teams from RapidAPI"""
     data = rapid_api.get_teams()
     return Response(data)
 
+@extend_schema(tags=['Teams & Players'], summary='Get players by team', parameters=[OpenApiParameter(name='team_id', type=str, description='Cricbuzz team ID')])
 @api_view(['GET'])
 def get_rapid_players(request):
     """Fetch players for a team from RapidAPI"""
@@ -303,42 +338,49 @@ def get_rapid_players(request):
     data = rapid_api.get_players(team_id=team_id)
     return Response(data)
 
+@extend_schema(tags=['Schedule'], summary='Get schedule (all)')
 @api_view(['GET'])
 def get_rapid_schedule(request):
     """Fetch cricket schedule/fixtures from RapidAPI"""
     data = rapid_api.get_schedule()
     return Response(data)
 
+@extend_schema(tags=['Schedule'], summary='Get women schedule')
 @api_view(['GET'])
 def get_rapid_schedule_women(request):
     """Fetch women cricket schedule/fixtures from RapidAPI"""
     data = rapid_api.get_schedule_women()
     return Response(data)
 
+@extend_schema(tags=['Schedule'], summary='Get league schedule')
 @api_view(['GET'])
 def get_rapid_schedule_league(request):
     """Fetch league cricket schedule/fixtures from RapidAPI"""
     data = rapid_api.get_schedule_league()
     return Response(data)
 
+@extend_schema(tags=['Schedule'], summary='Get domestic schedule')
 @api_view(['GET'])
 def get_rapid_schedule_domestic(request):
     """Fetch domestic cricket schedule/fixtures from RapidAPI"""
     data = rapid_api.get_schedule_domestic()
     return Response(data)
 
+@extend_schema(tags=['Schedule'], summary='Get international schedule')
 @api_view(['GET'])
 def get_rapid_schedule_international(request):
     """Fetch international cricket schedule/fixtures from RapidAPI"""
     data = rapid_api.get_schedule_international()
     return Response(data)
 
+@extend_schema(tags=['Schedule'], summary='Get all schedule (combined)')
 @api_view(['GET'])
 def get_rapid_schedule_all(request):
     """Fetch all cricket schedule/fixtures from RapidAPI"""
     data = rapid_api.get_schedule_all()
     return Response(data)
 
+@extend_schema(tags=['Match Detail (Cricbuzz)'], summary='Get match scoreboard', parameters=[OpenApiParameter(name='match_id', type=str, description='Cricbuzz match ID')])
 @api_view(['GET'])
 def get_rapid_match_scoreboard(request):
     """Fetch match detailed scoreboard from RapidAPI"""
@@ -346,6 +388,7 @@ def get_rapid_match_scoreboard(request):
     data = rapid_api.get_match_scoreboard(match_id=match_id)
     return Response(data)
 
+@extend_schema(tags=['Match Detail (Cricbuzz)'], summary='Get match info', parameters=[OpenApiParameter(name='match_id', type=str, description='Cricbuzz match ID')])
 @api_view(['GET'])
 def get_rapid_match_info(request):
     """Fetch match metadata and info from RapidAPI"""
@@ -353,18 +396,21 @@ def get_rapid_match_info(request):
     data = rapid_api.get_match_info(match_id=match_id)
     return Response(data)
 
+@extend_schema(tags=['Cricbuzz Matches'], summary='Get upcoming matches')
 @api_view(['GET'])
 def get_rapid_matches_upcoming(request):
     """Fetch upcoming matches list from RapidAPI"""
     data = rapid_api.get_matches_upcoming()
     return Response(data)
 
+@extend_schema(tags=['Cricbuzz Matches'], summary='Get recent matches')
 @api_view(['GET'])
 def get_rapid_matches_recent(request):
     """Fetch recent completed matches list from RapidAPI"""
     data = rapid_api.get_matches_recent()
     return Response(data)
 
+@extend_schema(tags=['Cricbuzz Matches'], summary='Get live matches')
 @api_view(['GET'])
 def get_rapid_matches_live(request):
     """Fetch live ongoing matches list from RapidAPI"""
@@ -372,6 +418,7 @@ def get_rapid_matches_live(request):
     return Response(data)
 
 
+@extend_schema(tags=['Authentication'], summary='Register a new user', description='Creates a new user account. At least one of email or mobile_number is required.')
 @api_view(['POST'])
 def register_user(request):
     """
@@ -441,6 +488,7 @@ def register_user(request):
     }, status=status.HTTP_201_CREATED)
 
 
+@extend_schema(tags=['Authentication'], summary='Login', description='Authenticates a user using email, mobile number, or username with password.')
 @api_view(['POST'])
 def login_user(request):
     """
