@@ -1,0 +1,9 @@
+Django>=5.0
+djangorestframework
+psycopg2-binary
+redis
+pytest-django
+python-dotenv
+django-cors-headers
+requests
+gunicorn
