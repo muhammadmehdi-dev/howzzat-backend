@@ -4,9 +4,12 @@ from drf_spectacular.utils import extend_schema
 from .models import Post, Category, Tag
 from .serializers import PostListSerializer, PostDetailSerializer, CategorySerializer, TagSerializer
 
+from api.pagination import StandardResultsSetPagination
+
 @extend_schema(tags=['Blog'], summary='List all published blog posts', description='Returns a paginated list of published posts with SEO summaries.')
 class PostList(generics.ListAPIView):
     serializer_class = PostListSerializer
+    pagination_class = StandardResultsSetPagination
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['category__slug', 'tags__slug']
     search_fields = ['title', 'content', 'focus_keyword']
