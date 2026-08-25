@@ -36,8 +36,8 @@ ENV PATH="/opt/venv/bin:$PATH"
 # Copy application code
 COPY --chown=appuser:appgroup . .
 
-# Create staticfiles directory and set permissions
-RUN mkdir -p /app/staticfiles && chown -R appuser:appgroup /app/staticfiles
+# Create staticfiles and media directories and set permissions
+RUN mkdir -p /app/staticfiles /app/media && chown -R appuser:appgroup /app/staticfiles /app/media
 
 # Set permissions for entrypoint
 RUN chmod +x entrypoint.sh

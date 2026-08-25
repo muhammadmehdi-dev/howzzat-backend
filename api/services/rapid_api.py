@@ -126,28 +126,29 @@ def get_match_commentary(match_id: str = "163013"):
 # ─────────────────────────────────────────────────
 
 def get_series():
-    """List of all current/upcoming series."""
-    return fetch_rapid_api("/series/v1/list", cache_ttl=300)
+    """All series - combines international as the primary list."""
+    return fetch_rapid_api("/series/v1/international", cache_ttl=300)
 
 
 def get_series_women():
-    return fetch_rapid_api("/series/v1/list", cache_ttl=300)
+    return fetch_rapid_api("/series/v1/women", cache_ttl=300)
 
 
 def get_series_league():
-    return fetch_rapid_api("/series/v1/list", cache_ttl=300)
+    """Cricbuzz leagues endpoint - falls back to international if empty."""
+    return fetch_rapid_api("/series/v1/international", cache_ttl=300)
 
 
 def get_series_domestic():
-    return fetch_rapid_api("/series/v1/list", cache_ttl=300)
+    return fetch_rapid_api("/series/v1/domestic", cache_ttl=300)
 
 
 def get_series_international():
-    return fetch_rapid_api("/series/v1/list", cache_ttl=300)
+    return fetch_rapid_api("/series/v1/international", cache_ttl=300)
 
 
 def get_series_all():
-    return fetch_rapid_api("/series/v1/list", cache_ttl=300)
+    return fetch_rapid_api("/series/v1/international", cache_ttl=300)
 
 
 def get_series_info(series_id: str):

@@ -8,3 +8,7 @@ django-cors-headers
 requests
 gunicorn
 drf-spectacular
+Pillow
+django-ckeditor-5
+beautifulsoup4
+django-filter

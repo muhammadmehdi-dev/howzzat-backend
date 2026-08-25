@@ -19,7 +19,10 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'drf_spectacular',
+    'django_filters',
+    'django_ckeditor_5',
     'api',
+    'blog',
 ]
 
 MIDDLEWARE = [
@@ -103,6 +106,9 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REDIS_URL = os.getenv("REDIS_URL", "redis://cache:6379/0")
@@ -140,5 +146,25 @@ SPECTACULAR_SETTINGS = {
         {'name': 'Series', 'description': 'Cricket series and tournaments from Cricbuzz'},
         {'name': 'Teams & Players', 'description': 'International teams and player squads from Cricbuzz'},
         {'name': 'Admin', 'description': 'Admin-only endpoints for managing match data'},
+        {'name': 'Blog', 'description': 'Blog posts and categories'},
     ],
 }
+
+# CKEditor 5 Configuration
+CKEDITOR_5_CONFIGS = {
+    'default': {
+        'toolbar': ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'imageUpload', 'sourceEditing'],
+        'image': {
+            'toolbar': ['imageTextAlternative', '|', 'imageStyle:alignLeft', 'imageStyle:alignRight', 'imageStyle:alignCenter', 'imageStyle:side']
+        },
+        'heading': {
+            'options': [
+                { 'model': 'paragraph', 'title': 'Paragraph', 'class': 'ck-heading_paragraph' },
+                { 'model': 'heading1', 'view': 'h1', 'title': 'Heading 1', 'class': 'ck-heading_heading1' },
+                { 'model': 'heading2', 'view': 'h2', 'title': 'Heading 2', 'class': 'ck-heading_heading2' },
+                { 'model': 'heading3', 'view': 'h3', 'title': 'Heading 3', 'class': 'ck-heading_heading3' }
+            ]
+        }
+    }
+}
+
