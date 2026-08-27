@@ -156,6 +156,41 @@ def get_series_info(series_id: str):
     return fetch_rapid_api(f"/series/v1/{series_id}", cache_ttl=300)
 
 
+def get_series_archives():
+    """Archived series list."""
+    return fetch_rapid_api("/series/v1/archives", cache_ttl=3600)
+
+
+def get_series_news(series_id: str):
+    """News articles for a specific series."""
+    return fetch_rapid_api(f"/news/v1/series/{series_id}", cache_ttl=300)
+
+
+def get_series_squads(series_id: str):
+    """Squad details for a specific series."""
+    return fetch_rapid_api(f"/series/v1/{series_id}/squads", cache_ttl=3600)
+
+
+def get_series_venues(series_id: str):
+    """Venues used in a specific series."""
+    return fetch_rapid_api(f"/series/v1/{series_id}/venues", cache_ttl=3600)
+
+
+def get_series_points_table(series_id: str):
+    """Points table for a specific series/tournament."""
+    return fetch_rapid_api(f"/series/v1/{series_id}/points-table", cache_ttl=300)
+
+
+def get_series_stats_filters(series_id: str):
+    """Available stats types/filters for a series."""
+    return fetch_rapid_api(f"/stats/v1/series/{series_id}", cache_ttl=3600)
+
+
+def get_series_stats(series_id: str, stats_type: str):
+    """Specific stats for a series (e.g. most runs)."""
+    return fetch_rapid_api(f"/stats/v1/series/{series_id}/{stats_type}", cache_ttl=300)
+
+
 # ─────────────────────────────────────────────────
 # Live Scores
 # ─────────────────────────────────────────────────
@@ -191,3 +226,51 @@ def get_players(team_id: str = "2"):
 def get_player_info(player_id: str):
     """Detailed profile and career stats for a player."""
     return fetch_rapid_api(f"/players/v1/{player_id}", cache_ttl=600)
+
+def get_team_schedule(team_id: str):
+    return fetch_rapid_api(f"/teams/v1/{team_id}/schedule", cache_ttl=3600)
+
+def get_team_results(team_id: str):
+    return fetch_rapid_api(f"/teams/v1/{team_id}/results", cache_ttl=3600)
+
+def get_team_news(team_id: str):
+    return fetch_rapid_api(f"/news/v1/team/{team_id}", cache_ttl=300)
+
+def get_team_stats(team_id: str, stats_type: str):
+    return fetch_rapid_api(f"/stats/v1/team/{team_id}/{stats_type}", cache_ttl=3600)
+
+def get_trending_players():
+    return fetch_rapid_api("/players/v1/trending", cache_ttl=3600)
+
+def get_player_career(player_id: str):
+    return fetch_rapid_api(f"/players/v1/{player_id}/career", cache_ttl=3600)
+
+def get_player_news(player_id: str):
+    return fetch_rapid_api(f"/news/v1/player/{player_id}", cache_ttl=300)
+
+def get_player_bowling_stats(player_id: str):
+    return fetch_rapid_api(f"/players/v1/{player_id}/bowling", cache_ttl=3600)
+
+def get_player_batting_stats(player_id: str):
+    return fetch_rapid_api(f"/players/v1/{player_id}/batting", cache_ttl=3600)
+
+def search_players(query: str):
+    return fetch_rapid_api(f"/players/v1/search/{query}", cache_ttl=3600)
+
+def get_venue_info(venue_id: str):
+    return fetch_rapid_api(f"/venues/v1/{venue_id}", cache_ttl=3600)
+
+def get_venue_stats(venue_id: str):
+    return fetch_rapid_api(f"/venues/v1/{venue_id}/stats", cache_ttl=3600)
+
+def get_venue_matches(venue_id: str):
+    return fetch_rapid_api(f"/venues/v1/{venue_id}/matches", cache_ttl=3600)
+
+def get_match_team(match_id: str):
+    return fetch_rapid_api(f"/mcenter/v1/{match_id}/team", cache_ttl=600)
+
+def get_match_overs(match_id: str):
+    return fetch_rapid_api(f"/mcenter/v1/{match_id}/overs", cache_ttl=60)
+
+def get_match_leanback(match_id: str):
+    return fetch_rapid_api(f"/mcenter/v1/{match_id}/leanback", cache_ttl=60)

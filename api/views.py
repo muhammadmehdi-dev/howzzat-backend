@@ -316,11 +316,59 @@ def get_rapid_series_international(request):
     data = rapid_api.get_series_international()
     return Response(data)
 
-@extend_schema(tags=['Series'], summary='Get all series (combined)')
 @api_view(['GET'])
+@extend_schema(tags=['RapidAPI'], summary='Get series list (All)')
 def get_rapid_series_all(request):
     """Fetch all master cricket series list from RapidAPI"""
     data = rapid_api.get_series_all()
+    return Response(data)
+
+@api_view(['GET'])
+@extend_schema(tags=['RapidAPI'], summary='Get archived series')
+def get_rapid_series_archives(request):
+    data = rapid_api.get_series_archives()
+    return Response(data)
+
+@api_view(['GET'])
+@extend_schema(tags=['RapidAPI'], summary='Get series matches & info')
+def get_rapid_series_info(request, series_id):
+    data = rapid_api.get_series_info(series_id)
+    return Response(data)
+
+@api_view(['GET'])
+@extend_schema(tags=['RapidAPI'], summary='Get series news')
+def get_rapid_series_news(request, series_id):
+    data = rapid_api.get_series_news(series_id)
+    return Response(data)
+
+@api_view(['GET'])
+@extend_schema(tags=['RapidAPI'], summary='Get series squads')
+def get_rapid_series_squads(request, series_id):
+    data = rapid_api.get_series_squads(series_id)
+    return Response(data)
+
+@api_view(['GET'])
+@extend_schema(tags=['RapidAPI'], summary='Get series venues')
+def get_rapid_series_venues(request, series_id):
+    data = rapid_api.get_series_venues(series_id)
+    return Response(data)
+
+@api_view(['GET'])
+@extend_schema(tags=['RapidAPI'], summary='Get series points table')
+def get_rapid_series_points_table(request, series_id):
+    data = rapid_api.get_series_points_table(series_id)
+    return Response(data)
+
+@api_view(['GET'])
+@extend_schema(tags=['RapidAPI'], summary='Get series stats filters')
+def get_rapid_series_stats_filters(request, series_id):
+    data = rapid_api.get_series_stats_filters(series_id)
+    return Response(data)
+
+@api_view(['GET'])
+@extend_schema(tags=['RapidAPI'], summary='Get series stats')
+def get_rapid_series_stats(request, series_id, stats_type):
+    data = rapid_api.get_series_stats(series_id, stats_type)
     return Response(data)
 
 @extend_schema(tags=['Teams & Players'], summary='Get international teams')
@@ -416,6 +464,92 @@ def get_rapid_matches_live(request):
     """Fetch live ongoing matches list from RapidAPI"""
     data = rapid_api.get_matches_live()
     return Response(data)
+
+# --- Teams ---
+@api_view(['GET'])
+@extend_schema(tags=['RapidAPI'], summary='Get team schedule')
+def get_rapid_team_schedule(request, team_id):
+    return Response(rapid_api.get_team_schedule(team_id))
+
+@api_view(['GET'])
+@extend_schema(tags=['RapidAPI'], summary='Get team results')
+def get_rapid_team_results(request, team_id):
+    return Response(rapid_api.get_team_results(team_id))
+
+@api_view(['GET'])
+@extend_schema(tags=['RapidAPI'], summary='Get team news')
+def get_rapid_team_news(request, team_id):
+    return Response(rapid_api.get_team_news(team_id))
+
+@api_view(['GET'])
+@extend_schema(tags=['RapidAPI'], summary='Get team stats')
+def get_rapid_team_stats(request, team_id, stats_type):
+    return Response(rapid_api.get_team_stats(team_id, stats_type))
+
+# --- Players ---
+@api_view(['GET'])
+@extend_schema(tags=['RapidAPI'], summary='Get trending players')
+def get_rapid_trending_players(request):
+    return Response(rapid_api.get_trending_players())
+
+@api_view(['GET'])
+@extend_schema(tags=['RapidAPI'], summary='Get player career')
+def get_rapid_player_career(request, player_id):
+    return Response(rapid_api.get_player_career(player_id))
+
+@api_view(['GET'])
+@extend_schema(tags=['RapidAPI'], summary='Get player news')
+def get_rapid_player_news(request, player_id):
+    return Response(rapid_api.get_player_news(player_id))
+
+@api_view(['GET'])
+@extend_schema(tags=['RapidAPI'], summary='Get player bowling stats')
+def get_rapid_player_bowling_stats(request, player_id):
+    return Response(rapid_api.get_player_bowling_stats(player_id))
+
+@api_view(['GET'])
+@extend_schema(tags=['RapidAPI'], summary='Get player batting stats')
+def get_rapid_player_batting_stats(request, player_id):
+    return Response(rapid_api.get_player_batting_stats(request, player_id))
+
+@api_view(['GET'])
+@extend_schema(tags=['RapidAPI'], summary='Search players')
+def search_rapid_players(request):
+    query = request.GET.get('query', '')
+    return Response(rapid_api.search_players(query))
+
+# --- Venues ---
+@api_view(['GET'])
+@extend_schema(tags=['RapidAPI'], summary='Get venue info')
+def get_rapid_venue_info(request, venue_id):
+    return Response(rapid_api.get_venue_info(venue_id))
+
+@api_view(['GET'])
+@extend_schema(tags=['RapidAPI'], summary='Get venue stats')
+def get_rapid_venue_stats(request, venue_id):
+    return Response(rapid_api.get_venue_stats(venue_id))
+
+@api_view(['GET'])
+@extend_schema(tags=['RapidAPI'], summary='Get venue matches')
+def get_rapid_venue_matches(request, venue_id):
+    return Response(rapid_api.get_venue_matches(venue_id))
+
+# --- Matches ---
+@api_view(['GET'])
+@extend_schema(tags=['RapidAPI'], summary='Get match teams')
+def get_rapid_match_team(request, match_id):
+    return Response(rapid_api.get_match_team(match_id))
+
+@api_view(['GET'])
+@extend_schema(tags=['RapidAPI'], summary='Get match overs')
+def get_rapid_match_overs(request, match_id):
+    return Response(rapid_api.get_match_overs(match_id))
+
+@api_view(['GET'])
+@extend_schema(tags=['RapidAPI'], summary='Get match leanback')
+def get_rapid_match_leanback(request, match_id):
+    return Response(rapid_api.get_match_leanback(match_id))
+
 
 
 @extend_schema(tags=['Authentication'], summary='Register a new user', description='Creates a new user account. At least one of email or mobile_number is required.')
