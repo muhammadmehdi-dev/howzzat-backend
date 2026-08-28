@@ -550,6 +550,27 @@ def get_rapid_match_overs(request, match_id):
 def get_rapid_match_leanback(request, match_id):
     return Response(rapid_api.get_match_leanback(match_id))
 
+# --- Stats & Rankings ---
+@api_view(['GET'])
+@extend_schema(tags=['RapidAPI'], summary='Get ICC Rankings')
+def get_rapid_icc_rankings(request):
+    return Response(rapid_api.get_icc_rankings(request.GET.dict()))
+
+@api_view(['GET'])
+@extend_schema(tags=['RapidAPI'], summary='Get ICC Standings')
+def get_rapid_icc_standings(request):
+    return Response(rapid_api.get_icc_standings(request.GET.dict()))
+
+@api_view(['GET'])
+@extend_schema(tags=['RapidAPI'], summary='Get Record Filters')
+def get_rapid_record_filters(request):
+    return Response(rapid_api.get_record_filters(request.GET.dict()))
+
+@api_view(['GET'])
+@extend_schema(tags=['RapidAPI'], summary='Get Records')
+def get_rapid_records(request):
+    return Response(rapid_api.get_records(request.GET.dict()))
+
 
 
 @extend_schema(tags=['Authentication'], summary='Register a new user', description='Creates a new user account. At least one of email or mobile_number is required.')

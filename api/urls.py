@@ -61,4 +61,9 @@ urlpatterns = [
     path('rapid/match/<str:match_id>/team/', views.get_rapid_match_team),
     path('rapid/match/<str:match_id>/overs/', views.get_rapid_match_overs),
     path('rapid/match/<str:match_id>/leanback/', views.get_rapid_match_leanback),
+    
+    path('rapid/stats/icc-rankings/', views.get_rapid_icc_rankings),
+    path('rapid/stats/icc-standings/', views.get_rapid_icc_standings),
+    path('rapid/stats/record-filters/', views.get_rapid_record_filters),
+    path('rapid/stats/records/', views.get_rapid_records),
 ]

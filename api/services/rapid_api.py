@@ -274,3 +274,19 @@ def get_match_overs(match_id: str):
 
 def get_match_leanback(match_id: str):
     return fetch_rapid_api(f"/mcenter/v1/{match_id}/leanback", cache_ttl=60)
+
+def get_icc_rankings(params: dict):
+    """ICC Rankings with dynamic query parameters"""
+    return fetch_rapid_api("/stats/v1/rankings", params=params, cache_ttl=3600)
+
+def get_icc_standings(params: dict):
+    """ICC Standings/Points Table"""
+    return fetch_rapid_api("/stats/v1/icc-standings", params=params, cache_ttl=3600)
+
+def get_record_filters(params: dict):
+    """Stats record filters"""
+    return fetch_rapid_api("/stats/v1/record-filters", params=params, cache_ttl=3600)
+
+def get_records(params: dict):
+    """Stats records with dynamic query parameters"""
+    return fetch_rapid_api("/stats/v1/records", params=params, cache_ttl=3600)
